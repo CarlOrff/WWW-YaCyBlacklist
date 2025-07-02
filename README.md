@@ -1,28 +1,10 @@
 # NAME
 
-WWW::YaCyBlacklist
+WWW::YaCyBlacklist - a Perl module to parse and execute YaCy blacklists
 
 # VERSION
 
 version 0.00
-
-# SYNOPSIS
-
-       use WWW::YaCyBlacklist;
-    
-# METHODS
-
-## new(%options)
-
-# Source
-
-[De:Blacklists](https://wiki.yacy.net/index.php/De:Blacklists).
-
-# See also
-
-- [Chess::PGN::Parse](https://metacpan.org/pod/Chess::PGN::Parse)
-- [DateTime::Incomplete](https://metacpan.org/pod/DateTime::Incomplete)
-- [http://datetime.perl.org/](http://datetime.perl.org/)
 
 # AUTHOR
 
