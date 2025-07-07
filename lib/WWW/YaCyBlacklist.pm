@@ -8,15 +8,22 @@ our $AUTHORITY = 'cpan:IBRAUN';
 $WWW::YaCyBlacklist::VERSION = '0.00';
 
 use Moose;
+use Moose::Util::TypeConstraints;
 use IO::All;
 use URI::URL;
-use Data::Dumper;
 
 # Needed if RegExps do not compile
 has 'use_regex' => (
     is  => 'ro',
     isa => 'Bool',
     default => 1,
+);
+
+# Needed if RegExps do not compile
+has 'filename' => (
+    is  => 'rw',
+    isa => 'Str',
+    default => 'url.ycb.black',
 );
 
 # Needed if RegExps do not compile
@@ -48,12 +55,18 @@ has 'sortorder' => (
     default => 0,
 );
 
+has 'sorting' => (
+    is  => 'rw',
+    isa => enum([qw[ alphabetical length origorder reverse_host ]]),,
+    default => 'origorder',
+);
 
 has 'patterns' => (
     is=>'rw',
     isa => 'HashRef',
     traits  => [ 'Hash' ],
     default => sub { {} },
+    init_arg => undef,
 );
 
 sub _check_host_regex {
@@ -96,23 +109,22 @@ sub length {
     return scalar keys %{ $self->patterns };
 }
 
-sub checkURL {
+sub check_url {
     
     my $self = shift;
     my $url = new URI $_[0];
     my $pq = ( defined $url->query ) ? $url->path.'?'.$url->query : $url->path;
     $pq =~ s/^\///;
-    my %hash = %{$self->patterns};
-    #Dumper(%hash) >> io('hash.txt');
-    #my $count = 0;
-    foreach my $pattern ( keys %hash ) {
-        #++$count  . "\t" .  $url->host . $url->path . "\t\t" . $pattern . "\n" >> io('hash.txt');
-        my $path = '^' . $hash{$pattern}{path} . '$';
+    
+    foreach my $pattern ( keys %{ $self->patterns } ) {
+        my $path = '^' . ${ $self->patterns }{ $pattern }{path} . '$';
         next if $pq !~ /$path/;
-        my $host = $hash{$pattern}{host};
-        if ( !$hash{$pattern}{host_regex} ) {
+        my $host = ${ $self->patterns }{ $pattern }{host};
+        
+        if ( !${ $self->patterns }{ $pattern }{host_regex} ) {
             $host =~ s/\*/.*/g;
-            if ( $hash{$pattern}{host} =~ /\.\*$/ ) {
+            
+            if ( ${ $self->patterns }{ $pattern }{host} =~ /\.\*$/ ) {
                 return 1 if $url->host =~ /^$host$/;
             }
             else {
@@ -126,6 +138,49 @@ sub checkURL {
     return 0;
 }
 
+sub find_matches {
+    
+    my $self = shift;
+    my @urls;
+    grep { push( @urls, $_ ) if $self->check_url( $_ ) } @_;
+    return @urls;
+}
+
+
+sub find_non_matches {
+    
+    my $self = shift;
+    my @urls;
+    grep { push( @urls, $_ ) if !$self->check_url( $_ ) } @_;
+    return @urls;
+}
+
+sub delete_pattern {
+    
+    my $self = shift;
+    my $pattern = shift;
+    delete( ${ $self->patterns }{ $pattern } ) if exists( ${ $self->patterns }{ $pattern } ) ;
+}
+
+sub sort_list {
+    
+    my $self = shift;
+    my @sorted_list;
+  
+    @sorted_list = sort keys %{ $self->patterns } if $self->sorting eq 'alphabetical';
+    @sorted_list = sort { CORE::length $a <=> CORE::length $b } keys %{ $self->patterns } if $self->sorting eq 'length';
+    @sorted_list = sort { ${ $self->patterns }{ $a }{ origorder } <=> ${ $self->patterns }{ $b }{ origorder } } keys %{ $self->patterns } if $self->sorting eq 'origorder';
+    @sorted_list = sort { reverse( ${ $self->patterns }{ $a }{ host } ) cmp reverse( ${ $self->patterns }{ $b }{ host } ) } keys %{ $self->patterns }  if $self->sorting eq 'reverse_host';
+    
+   return @sorted_list if $self->sortorder;
+   return reverse( @sorted_list );
+}
+
+sub store_list {
+    
+    my $self = shift;
+    join( "\n", $self->sort_list ) > io(  $self->filename )->encoding( $self->file_charset )->all;
+}
 
 1;
 no Moose;
