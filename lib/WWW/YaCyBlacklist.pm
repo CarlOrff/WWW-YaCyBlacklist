@@ -9,6 +9,8 @@ $WWW::YaCyBlacklist::VERSION = '0.00';
 
 use Moose;
 use IO::All;
+use URI::URL;
+use Data::Dumper;
 
 # Needed if RegExps do not compile
 has 'use_regex' => (
@@ -31,13 +33,21 @@ has 'lines' => (
     default => 0,
     init_arg => undef,
 );
-
+ 
 has 'origorder' => (
     is  => 'rw',
     isa => 'Int',
     default => 0,
     init_arg => undef,
 );
+
+# 0 ascending, 1 descending
+has 'sortorder' => (
+    is  => 'rw',
+    isa => 'Bool',
+    default => 0,
+);
+
 
 has 'patterns' => (
     is=>'rw',
@@ -85,6 +95,37 @@ sub length {
     my $self = shift;
     return scalar keys %{ $self->patterns };
 }
+
+sub checkURL {
+    
+    my $self = shift;
+    my $url = new URI $_[0];
+    my $pq = ( defined $url->query ) ? $url->path.'?'.$url->query : $url->path;
+    $pq =~ s/^\///;
+    my %hash = %{$self->patterns};
+    #Dumper(%hash) >> io('hash.txt');
+    #my $count = 0;
+    foreach my $pattern ( keys %hash ) {
+        #++$count  . "\t" .  $url->host . $url->path . "\t\t" . $pattern . "\n" >> io('hash.txt');
+        my $path = '^' . $hash{$pattern}{path} . '$';
+        next if $pq !~ /$path/;
+        my $host = $hash{$pattern}{host};
+        if ( !$hash{$pattern}{host_regex} ) {
+            $host =~ s/\*/.*/g;
+            if ( $hash{$pattern}{host} =~ /\.\*$/ ) {
+                return 1 if $url->host =~ /^$host$/;
+            }
+            else {
+                return 1 if $url->host =~ /^(.+\.)?$host$/;
+            }
+        }
+        else {
+            return 1 if $url->host  =~ /^$host$/;
+        }
+    }
+    return 0;
+}
+
 
 1;
 no Moose;
