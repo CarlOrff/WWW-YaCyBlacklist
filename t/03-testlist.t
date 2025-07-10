@@ -6,7 +6,7 @@ use Test::More tests => 49;
 
 require_ok( 'WWW::YaCyBlacklist' );
 
-my $ycb = WWW::YaCyBlacklist->new( 'use_regex' => 1 );
+my $ycb = WWW::YaCyBlacklist->new( { 'use_regex' => 1 } );
 $ycb->read_from_array(
     'test1.co/fullpath',
     'test2.co/.*',
@@ -79,7 +79,7 @@ my @m = (
     'http://test6.co/fullpath',
     'http://sub.sub.test3.co/fullpath',
     'http://test9.co/%C3%A4%C3%B6%C3%BC%C3%9F%C3%84%C3%96%C3%9C',
-    
+
     # non-matches
     'http://sub.test1.co/fullpatha',
     'http://sub.test6.co/fullpath?ref=test',
