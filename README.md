@@ -4,7 +4,7 @@ WWW::YaCyBlacklist - a Perl module to parse and execute YaCy blacklists
 
 # VERSION
 
-version 0.1
+version 0.2
 
 # SYNOPSIS
 
@@ -94,16 +94,16 @@ Prints the current list to a file. Executes `sort_list( )`.
 
 YaCy does not allow host patterns with to stars at the time being. `WWW::YaCyBlacklist` does not check for this but simply executes.
 
-# Source
-
-[De:Blacklists](https://wiki.yacy.net/index.php/De:Blacklists) (German).
-
 If there is something you would like to tell me, there are different channels for you:
 
 - [GitHub issue tracker](https://github.com/CarlOrff/WWW-YaCyBlacklist/issues)
 - [CPAN issue tracker](https://rt.cpan.org/Public/Dist/Display.html?WWW-YaCyBlacklist)
 - [Project page on my homepage](https://ingram-braun.net/erga/the-www-yacyblacklist-module/)
 - [Contact form on my homepage](https://ingram-braun.net/erga/legal-notice-and-contact/)
+
+# Source
+
+[De:Blacklists](https://wiki.yacy.net/index.php/De:Blacklists) (German).
 
 # See also
 
