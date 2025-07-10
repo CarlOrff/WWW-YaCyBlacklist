@@ -13,39 +13,6 @@ use IO::All;
 use URI::URL;
 require 5.6.0;
 
-=head1 SYNOPSIS
-
-    use WWW::YaCyBlacklist;
-
-    my $ycb = WWW::YaCyBlacklist->new( { 'use_regex' => 1 } );
-    $ycb->read_from_array(
-        'test1.co/fullpath',
-        'test2.co/.*',
-    );
-    $ycb->read_from_files(
-        '/path/to/1.black',
-        '/path/to/2.black',
-    );
-
-    print "Match!" if $ycb->check_url( 'http://test1.co/fullpath' );
-    my @urls = (
-        'https://www.perlmonks.org/',
-        'https://metacpan.org/',
-    );
-    my @matches = $ycb->find_matches( @urls );
-    my @nonmatches = $ycb->find_non_matches( @urls );
-
-    $ycb->sortorder( 1 );
-    $ycb->sorting( 'alphabetical' );
-    $ycb->store_list( '/path/to/new.black' );
-
-=method C<new(%options)>
-
-=method C<use_regex =E<gt> 0|1> (default C<1>)
-
-Can only be set in the constructor and never be changed any later. If C<false>, the pattern will not get checked if the
-C<host> part is a regular expression (but the patterns remain in the list).
-=cut
 
 # Needed if RegExps do not compile
 has 'use_regex' => (
@@ -54,10 +21,6 @@ has 'use_regex' => (
     default => 1,
 );
 
-=method C<filename =E<gt> '/path/to/file.black'> (default C<ycb.black>)
-
-This is file printed by C<store_list>
-=cut
 
 has 'filename' => (
     is  => 'rw',
@@ -86,11 +49,6 @@ has 'origorder' => (
     init_arg => undef,
 );
 
-=method C<sortorder =E<gt>  0|1> (default C<0>)
-
-0 ascending, 1 descending
-Configures C<sort_list>
-=cut
 
 has 'sortorder' => (
     is  => 'rw',
@@ -98,14 +56,10 @@ has 'sortorder' => (
     default => 0,
 );
 
-=method C<sorting =E<gt> 'alphabetical|length|origorder|random|reverse_host'> (default C<'origorder>)
-
-Configures C<sort_list>
-=cut
 
 has 'sorting' => (
     is  => 'rw',
-    isa => enum([qw[ alphabetical length origorder random reverse_host ]]),
+    isa => enum([qw[ alphabetical length origorder random reverse_host ]]),,
     default => 'origorder',
 );
 
@@ -125,10 +79,6 @@ sub _check_host_regex {
     return 1;
 }
 
-=method C<void read_from_array( @patterns )>
-
-Reads a list of YaCy blacklist patterns.
-=cut
 
 sub read_from_array {
 
@@ -146,10 +96,6 @@ sub read_from_array {
     $self->patterns( \%hash );
 }
 
-=method C<void read_from_files( @files )>
-
-Reads a list of YaCy blacklist files.
-=cut
 
 sub read_from_files {
 
@@ -161,10 +107,6 @@ sub read_from_files {
     $self->read_from_array( @lines );
 }
 
-=method C<int length( )>
-
-Returns the number of patterns in the current list.
-=cut
 
 sub length {
 
@@ -172,10 +114,6 @@ sub length {
     return scalar keys %{ $self->patterns };
 }
 
-=method C<bool check_url( $URL )>
-
-1 if the URL was matched by any pattern, 0 otherwise.
-=cut
 
 sub check_url {
 
@@ -206,10 +144,6 @@ sub check_url {
     return 0;
 }
 
-=method C<@URLS_OUT find_matches( @URLS_IN )>
-
-Returns all URLs which was matches by the current list.
-=cut
 
 sub find_matches {
 
@@ -219,10 +153,6 @@ sub find_matches {
     return @urls;
 }
 
-=method C<@URLS_OUT find_non_matches( @URLS_IN )>
-
-Returns all URLs which was not matches by the current list.
-=cut
 
 sub find_non_matches {
 
@@ -232,10 +162,6 @@ sub find_non_matches {
     return @urls;
 }
 
-=method C<void delete_pattern( $pattern )>
-
-Removes a pattern from the current list.
-=cut
 
 sub delete_pattern {
 
@@ -244,10 +170,6 @@ sub delete_pattern {
     delete( ${ $self->patterns }{ $pattern } ) if exists( ${ $self->patterns }{ $pattern } ) ;
 }
 
-=method C<@patterns sort_list( )>
-
-Returns a list of patterns configured by C<sorting> and C<sortorder>.
-=cut
 
 sub sort_list {
 
@@ -264,10 +186,6 @@ sub sort_list {
    return reverse( @sorted_list );
 }
 
-=method C<void store_list( )>
-
-Prints the current list to a file. Executes C<sort_list( )>.
-=cut
 
 sub store_list {
 
@@ -279,9 +197,111 @@ sub store_list {
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
+__END__
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+WWW::YaCyBlacklist - a Perl module to parse and execute YaCy blacklists
+
+=head1 VERSION
+
+version 0.1
+
+=head1 SYNOPSIS
+
+    use WWW::YaCyBlacklist;
+
+    my $ycb = WWW::YaCyBlacklist->new( { 'use_regex' => 1 } );
+    $ycb->read_from_array(
+        'test1.co/fullpath',
+        'test2.co/.*',
+    );
+    $ycb->read_from_files(
+        '/path/to/1.black',
+        '/path/to/2.black',
+    );
+
+    print "Match!" if $ycb->check_url( 'http://test1.co/fullpath' );
+    my @urls = (
+        'https://www.perlmonks.org/',
+        'https://metacpan.org/',
+    );
+    my @matches = $ycb->find_matches( @urls );
+    my @nonmatches = $ycb->find_non_matches( @urls );
+
+    $ycb->sortorder( 1 );
+    $ycb->sorting( 'alphabetical' );
+    $ycb->store_list( '/path/to/new.black' );
+
+=head1 METHODS
+
+=head2 C<new(%options)>
+
+=head2 C<use_regex =E<gt> 0|1> (default C<1>)
+
+Can only be set in the constructor and never be changed any later. If C<false>, the pattern will not get checked if the
+C<host> part is a regular expression (but the patterns remain in the list).
+
+=head2 C<filename =E<gt> '/path/to/file.black'> (default C<ycb.black>)
+
+This is file printed by C<store_list>
+
+=head2 C<sortorder =E<gt>  0|1> (default C<0>)
+
+0 ascending, 1 descending
+Configures C<sort_list>
+
+=head2 C<sorting =E<gt> 'alphabetical|length|origorder|random|reverse_host'> (default C<'origorder>)
+
+Configures C<sort_list>
+
+=head2 C<void read_from_array( @patterns )>
+
+Reads a list of YaCy blacklist patterns.
+
+=head2 C<void read_from_files( @files )>
+
+Reads a list of YaCy blacklist files.
+
+=head2 C<int length( )>
+
+Returns the number of patterns in the current list.
+
+=head2 C<bool check_url( $URL )>
+
+1 if the URL was matched by any pattern, 0 otherwise.
+
+=head2 C<@URLS_OUT find_matches( @URLS_IN )>
+
+Returns all URLs which was matches by the current list.
+
+=head2 C<@URLS_OUT find_non_matches( @URLS_IN )>
+
+Returns all URLs which was not matches by the current list.
+
+=head2 C<void delete_pattern( $pattern )>
+
+Removes a pattern from the current list.
+
+=head2 C<@patterns sort_list( )>
+
+Returns a list of patterns configured by C<sorting> and C<sortorder>.
+
+=head2 C<void store_list( )>
+
+Prints the current list to a file. Executes C<sort_list( )>.
+
 =head1 Bugs
 
 YaCy does not allow host patterns with to stars at the time being. C<WWW::YaCyBlacklist> does not check for this but simply executes.
+
+=head1 Source
+
+L<De:Blacklists|https://wiki.yacy.net/index.php/De:Blacklists> (German).
 
 If there is something you would like to tell me, there are different channels for you:
 
@@ -305,11 +325,6 @@ L<Contact form on my homepage|https://ingram-braun.net/erga/legal-notice-and-con
 
 =back
 
-
-=head1 Source
-
-L<De:Blacklists|https://wiki.yacy.net/index.php/De:Blacklists> (German).
-
 =head1 See also
 
 =over
@@ -319,3 +334,16 @@ L<De:Blacklists|https://wiki.yacy.net/index.php/De:Blacklists> (German).
 L<Dev:APIlist|https://wiki.yacy.net/index.php/Dev:APIlist>
 
 =back
+
+=head1 AUTHOR
+
+Ingram Braun <carlorff1@gmail.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2025 by Ingram Braun.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
