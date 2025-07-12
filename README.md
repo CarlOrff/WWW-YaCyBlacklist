@@ -4,7 +4,7 @@ WWW::YaCyBlacklist - a Perl module to parse and execute YaCy blacklists
 
 # VERSION
 
-version 0.2
+version 0.3
 
 # SYNOPSIS
 
@@ -43,7 +43,7 @@ Can only be set in the constructor and never be changed any later. If `false`, t
 
 ## `filename => '/path/to/file.black'` (default `ycb.black`)
 
-This is file printed by `store_list`
+This is the file printed by `store_list`
 
 ## `sortorder =>  0|1` (default `0`)
 
@@ -90,9 +90,17 @@ Returns a list of patterns configured by `sorting` and `sortorder`.
 
 Prints the current list to a file. Executes `sort_list( )`.
 
-# Bugs
+# OPERATIONAL NOTES
 
-YaCy does not allow host patterns with to stars at the time being. `WWW::YaCyBlacklist` does not check for this but simply executes.
+The error
+
+    ^* matches null string many times in regex; marked by <-- HERE in m/^^* <-- HERE
+
+is probably caused by a corrupted path part of a pattern in your list (`*` instead of `.*`).
+
+# BUGS
+
+YaCy does not allow host patterns with to stars at the time being. `WWW::YaCyBlacklist` does not check for this but simply executes. This is rather a YaCy bug.
 
 If there is something you would like to tell me, there are different channels for you:
 
@@ -101,13 +109,15 @@ If there is something you would like to tell me, there are different channels fo
 - [Project page on my homepage](https://ingram-braun.net/erga/the-www-yacyblacklist-module/)
 - [Contact form on my homepage](https://ingram-braun.net/erga/legal-notice-and-contact/)
 
-# Source
+# SOURCE
 
-[De:Blacklists](https://wiki.yacy.net/index.php/De:Blacklists) (German).
-
-# See also
-
+- [De:Blacklists](https://wiki.yacy.net/index.php/De:Blacklists) (German).
 - [Dev:APIlist](https://wiki.yacy.net/index.php/Dev:APIlist)
+
+# SEE ALSO
+
+- [YaCy homepage](https://yacy.net/)
+- [YaCy community](https://community.searchlab.eu/)
 
 # AUTHOR
 
