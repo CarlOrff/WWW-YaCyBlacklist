@@ -4,7 +4,7 @@ WWW::YaCyBlacklist - a Perl module to parse and execute YaCy blacklists
 
 # VERSION
 
-version 0.3
+version 0.4
 
 # SYNOPSIS
 
