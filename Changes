@@ -1,6 +1,9 @@
 Revision history for WWW::YaCyBlacklist
 
 {{$NEXT}}
+        check_url() more robust
+
+0.4       2025-07-13 02:20:09+02:00 Europe/Berlin
         chomp list file lines
 
 0.3       2025-07-12 21:15:18+02:00 Europe/Berlin

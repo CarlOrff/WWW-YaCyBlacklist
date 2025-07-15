@@ -4,7 +4,7 @@ WWW::YaCyBlacklist - a Perl module to parse and execute YaCy blacklists
 
 # VERSION
 
-version 0.4
+version 0.5
 
 # SYNOPSIS
 
@@ -92,11 +92,7 @@ Prints the current list to a file. Executes `sort_list( )`.
 
 # OPERATIONAL NOTES
 
-The error
-
-    ^* matches null string many times in regex; marked by <-- HERE in m/^^* <-- HERE
-
-is probably caused by a corrupted path part of a pattern in your list (`*` instead of `.*`).
+`WWW::YaCyBlacklist` checks the path part including the leading separator `/`. This protects against regexp compiling errors with leading quantifiers. So do not something like `host.tld/^path` although YaCy allows this.
 
 # BUGS
 
