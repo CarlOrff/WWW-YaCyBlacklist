@@ -5,7 +5,7 @@ package WWW::YaCyBlacklist;
 # ABSTRACT: a Perl module to parse and execute YaCy blacklists
 
 our $AUTHORITY = 'cpan:IBRAUN';
-$WWW::YaCyBlacklist::VERSION = '0.6';
+$WWW::YaCyBlacklist::VERSION = '0.7';
 
 use Moose;
 use Moose::Util::TypeConstraints;
@@ -37,7 +37,7 @@ require 5.8.0;
 
     $ycb->sortorder( 1 );
     $ycb->sorting( 'alphabetical' );
-    $ycb->sortorder( '/path/to/new.black' );
+    $ycb->filename( '/path/to/new.black' );
     $ycb->store_list( );
 
 =method C<new(%options)>
@@ -152,6 +152,10 @@ sub read_from_files {
     my @lines;
 
     grep { push( @lines, io( $_ )->encoding( $self->file_charset )->chomp->slurp ) } @files;
+
+    # chomp is not fully reliable with Windows files in Linux
+    grep { my $s = $_; $s =~ s/\r$//; $s } @lines;
+
     $self->read_from_array( @lines );
 }
 
@@ -285,7 +289,7 @@ C<check_url( )> alway returns true if the protocol of the URL is not C<https?> o
 
 =head1 BUGS
 
-YaCy does not allow host patterns with to stars at the time being. C<WWW::YaCyBlacklist> does not check for this but simply executes. This is rather a YaCy bug.
+YaCy does not allow host patterns with two ore more stars at the time being. C<WWW::YaCyBlacklist> does not check for this but simply executes. This is rather a YaCy bug.
 
 If there is something you would like to tell me, there are different channels for you:
 

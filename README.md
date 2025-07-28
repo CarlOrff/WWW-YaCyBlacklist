@@ -4,7 +4,7 @@ WWW::YaCyBlacklist - a Perl module to parse and execute YaCy blacklists
 
 # VERSION
 
-version 0.6
+version 0.7
 
 # SYNOPSIS
 
@@ -30,7 +30,7 @@ version 0.6
 
     $ycb->sortorder( 1 );
     $ycb->sorting( 'alphabetical' );
-        $ycb->sortorder( '/path/to/new.black' );
+    $ycb->filename( '/path/to/new.black' );
     $ycb->store_list( );
 
 # METHODS
@@ -95,11 +95,11 @@ Prints the current list to a file. Executes `sort_list( )`.
 
 `WWW::YaCyBlacklist` checks the path part including the leading separator `/`. This protects against regexp compiling errors with leading quantifiers. So do not something like `host.tld/^path` although YaCy allows this.
 
-`check_url( )` alway returns true if the protocol of the URL is not `https?` of `ftps?`.
+`check_url( )` alway returns true if the protocol of the URL is not `https?` or `ftps?`.
 
 # BUGS
 
-YaCy does not allow host patterns with to stars at the time being. `WWW::YaCyBlacklist` does not check for this but simply executes. This is rather a YaCy bug.
+YaCy does not allow host patterns with two ore more stars at the time being. `WWW::YaCyBlacklist` does not check for this but simply executes. This is rather a YaCy bug.
 
 If there is something you would like to tell me, there are different channels for you:
 
