@@ -5,7 +5,7 @@ package WWW::YaCyBlacklist;
 # ABSTRACT: a Perl module to parse and execute YaCy blacklists
 
 our $AUTHORITY = 'cpan:IBRAUN';
-$WWW::YaCyBlacklist::VERSION = '0.7';
+$WWW::YaCyBlacklist::VERSION = '0.8';
 
 use Moose;
 use Moose::Util::TypeConstraints;
@@ -127,18 +127,15 @@ Reads a list of YaCy blacklist patterns.
 sub read_from_array {
 
     my ($self, @lines) = @_;
-    my %hash;
 
     foreach my $line ( @lines ) {
         if ( CORE::length $line > 0 ) {
-            $hash{ $line }{ 'origorder' } = $self->origorder( $self->origorder + 1 );
-            ( $hash{ $line }{ 'host' }, $hash{ $line }{ 'path' } ) = split /(?!\\)\/+?/, $line, 2;
-            $hash{ $line }{ 'path' } = '/' . $hash{ $line }{ 'path' };
-            $hash{ $line }{ 'host_regex' } = $self->_check_host_regex( $hash{ $line }{ 'host' } );
+            ${ $self->patterns }{ $line }{ 'origorder' } = $self->origorder( $self->origorder + 1 );
+            ( ${ $self->patterns }{ $line }{ 'host' }, ${ $self->patterns }{ $line }{ 'path' } ) = split /(?!\\)\/+?/, $line, 2;
+            ${ $self->patterns }{ $line }{ 'path' } = '/' . ${ $self->patterns }{ $line }{ 'path' };
+            ${ $self->patterns }{ $line }{ 'host_regex' } = $self->_check_host_regex( ${ $self->patterns }{ $line }{ 'host' } );
         }
     }
-
-    $self->patterns( \%hash );
 }
 
 =method C<void read_from_files( @files )>
