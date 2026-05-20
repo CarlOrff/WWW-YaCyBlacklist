@@ -5,7 +5,7 @@ package WWW::YaCyBlacklist;
 # ABSTRACT: a Perl module to parse and execute YaCy blacklists
 
 our $AUTHORITY = 'cpan:IBRAUN';
-$WWW::YaCyBlacklist::VERSION = '0.8';
+$WWW::YaCyBlacklist::VERSION = '0.9';
 
 use Moose;
 use Moose::Util::TypeConstraints;
@@ -129,12 +129,13 @@ sub read_from_array {
     my ($self, @lines) = @_;
 
     foreach my $line ( @lines ) {
-        if ( CORE::length $line > 0 ) {
+        if ( CORE::length $line > 0 && $line =~ /.+\/.+/ ) {
             ${ $self->patterns }{ $line }{ 'origorder' } = $self->origorder( $self->origorder + 1 );
             ( ${ $self->patterns }{ $line }{ 'host' }, ${ $self->patterns }{ $line }{ 'path' } ) = split /(?!\\)\/+?/, $line, 2;
             ${ $self->patterns }{ $line }{ 'path' } = '/' . ${ $self->patterns }{ $line }{ 'path' };
             ${ $self->patterns }{ $line }{ 'host_regex' } = $self->_check_host_regex( ${ $self->patterns }{ $line }{ 'host' } );
         }
+        else { print STDERR "\n\tWARNING: ignoring broken pattern '", $line, "'\n"; }
     }
 }
 
