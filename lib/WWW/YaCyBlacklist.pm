@@ -289,8 +289,6 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 OPERATIONAL NOTES
 
-C<WWW::YaCyBlacklist> checks the path part including the leading separator C</>. This protects against regexp compiling errors with leading quantifiers. So do not something like C<host.tld/^path> although YaCy allows this.
-
 C<check_url( )> alway returns true if the protocol of the URL is not C<https?> or C<ftps?>.
 
 =head1 BUGS

@@ -93,8 +93,6 @@ Prints the current list to a file. Executes `sort_list( )`.
 
 # OPERATIONAL NOTES
 
-`WWW::YaCyBlacklist` checks the path part including the leading separator `/`. This protects against regexp compiling errors with leading quantifiers. So do not something like `host.tld/^path` although YaCy allows this.
-
 `check_url( )` alway returns true if the protocol of the URL is not `https?` or `ftps?`.
 
 # BUGS
