@@ -5,7 +5,7 @@ package WWW::YaCyBlacklist;
 # ABSTRACT: a Perl module to parse and execute YaCy blacklists
 
 our $AUTHORITY = 'cpan:IBRAUN';
-$WWW::YaCyBlacklist::VERSION = '0.10';
+$WWW::YaCyBlacklist::VERSION = '1.00';
 
 use Moose;
 use Moose::Util::TypeConstraints;
